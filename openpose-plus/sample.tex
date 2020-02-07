@@ -1,0 +1,203 @@
+\documentclass[twoside,11pt]{article}
+
+% Any additional packages needed should be included after jmlr2e.
+% Note that jmlr2e.sty includes epsfig, amssymb, natbib and graphicx,
+% and defines many common macros, such as 'proof' and 'example'.
+%
+% It also sets the bibliographystyle to plainnat; for more information on
+% natbib citation styles, see the natbib documentation, a copy of which
+% is archived at http://www.jmlr.org/format/natbib.pdf
+
+% Available options for package jmlr2e are:
+%
+%   - abbrvbib : use abbrvnat for the bibliography style
+%   - nohyperref : do not load the hyperref package
+%   - preprint : remove JMLR specific information from the template,
+%         useful for example for posting to preprint servers.
+%
+% Example of using the package with custom options:
+%
+% \usepackage[abbrvbib, preprint]{jmlr2e}
+
+\usepackage{jmlr2e}
+
+% Definitions of handy macros can go here
+
+\newcommand{\dataset}{{\cal D}}
+\newcommand{\fracpartial}[2]{\frac{\partial #1}{\partial  #2}}
+
+% Heading arguments are {volume}{year}{pages}{date submitted}{date published}{paper id}{author-full-names}
+
+\jmlrheading{1}{2000}{1-48}{4/00}{10/00}{meila00a}{Marina Meil\u{a} and Michael I. Jordan}
+
+% Short headings should be running head and authors last names
+
+\ShortHeadings{Learning with Mixtures of Trees}{Meil\u{a} and Jordan}
+\firstpageno{1}
+
+\begin{document}
+
+\title{OpenPose-Plus: A Flexible and High-performance \\
+Human Pose Estimation Framework}
+
+\author{\name Marina Meil\u{a} \email mmp@stat.washington.edu \\
+       \addr Department of Statistics\\
+       University of Washington\\
+       Seattle, WA 98195-4322, USA
+       \AND
+       \name Michael I.\ Jordan \email jordan@cs.berkeley.edu \\
+       \addr Division of Computer Science and Department of Statistics\\
+       University of California\\
+       Berkeley, CA 94720-1776, USA}
+
+\editor{Kevin Murphy and Bernhard Sch{\"o}lkopf}
+
+\maketitle
+
+\begin{abstract}%   <- trailing '%' for backward compatibility of .sty file
+%This paper describes the mixtures-of-trees model, a probabilistic 
+%model for discrete multidimensional domains.  Mixtures-of-trees 
+%generalize the probabilistic trees of \citet{chow:68}
+%in a different and complementary direction to that of Bayesian networks.
+%We present efficient algorithms for learning mixtures-of-trees 
+%models in maximum likelihood and Bayesian frameworks. 
+%We also discuss additional efficiencies that can be
+%obtained when data are ``sparse,'' and we present data 
+%structures and algorithms that exploit such sparseness.
+%Experimental results demonstrate the performance of the 
+%model for both density estimation and classification. 
+%We also discuss the sense in which tree-based classifiers
+%perform an implicit form of feature selection, and demonstrate
+%a resulting insensitivity to irrelevant attributes.
+\end{abstract}
+
+\begin{keywords}
+  Human Pose Estimation, Flexible High-level APIs, High-performance System
+\end{keywords}
+
+\section{Introduction}
+
+Human pose estimation is a core task in computer vision.
+Its goal is to localise human anatomical key-points (e.g., elbow, wrist, etc.)
+and use the detected key-points to infer human pose. 
+Estimating human pose has many important applications, such as interactive gaming~\citep{x}, automated supermarket~\citep{x},
+surveillance camera~\citep{x} and self-driving cars~\citep{x}.
+This has motivated practitioners and scientists to invent 
+many useful pose estimation algorithms~\citep{x1, x2, x3, x4, x5}
+recently.
+
+It is important to design, test and deploy the
+pose estimation algorithms in real-world environments. 
+Developers find this difficult for two major challenges: (1)
+They often need to \emph{flexibly} customise the algorithms
+based on pose estimation
+applications. These applications contain many dependent components 
+used in the
+training and inference phases. During training,
+different applications need different training
+datasets, data augmentation, model architectures
+and logic for interpreting detected key-points.
+During inference, these applications
+also need to achieve different ways of handling real-time data inputs and
+embedded platforms (e.g., TensorRT or CPU); (2) Pose estimation
+applications produces challenging data input rates (i.e., processing tens of high-resolution images per second on an embedded platform~\citep{x}). Developers
+must ensure no bottleneck can occur in all the components in a pipeline
+, and thus can achieve the preferred real-time processing. 
+
+Existing pose estimation systems are unable to fully address
+these challenges.
+On one end, there are domain-specific systems such as OpenPose~\citep{x} which achieves high-performance using 
+a monolithic low-level implementation.
+There are no APIs for configuring the systems, and
+as a result, the developers have to largely modify or rewrite the
+the systems based on the specific requirements from applications. 
+On the other end,
+there are general-purpose high-level
+CPU/GPU engines such as TensorFlow and PyTorch that can be used
+for pose estimation 
+These engines allow the users to easily customise different components;
+but with major performance overheads. 
+
+To close this gap, we design a human pose estimation framework OpenPose-Plus that
+aims to provide both flexibility and high-performance. OpenPose-Plus has two novel designs:
+(i) high-level Python APIs which allows users
+to customise abstracted components that
+are pervasively used in training and deploying
+pose estimation algorithms; (ii) a high-performance runtime that
+can automatically run these components 
+on embedded hardware: TensorRT, minimise
+data movement to achieve low-latency,
+and collectively schedule the component
+to ensure all input can be processed in real-time.
+
+We demonstrate the generality of our design by using OpenPose-Plus 
+to implement various
+state-of-the-art pose estimation applications~\citep{x1, x2, x3}.
+Evaluation result shows that
+OpenPose-Plus is able to process 30 [resolution?] images per second
+produced by a high-resolution camera on a commodity 1070 GPU,
+which goes beyond the 24 images/s real-time processing requirement.
+OpenPose-Plus was open-sourced in October 2018 with a 
+Apache 2 licence. Since after, it has attracted numerous 
+industry and academic users, and created a large use base on Github (700 stars by the date of submission). 
+
+\section{Architecture and Runtime Design}
+
+\section{High-level APIs and Applications}
+
+\section{Conclusion}
+
+% Acknowledgements should go at the end, before appendices and references
+
+%\acks{We would like to acknowledge support for this project
+%from the National Science Foundation (NSF grant IIS-9988642)
+%and the Multidisciplinary Research Program of the Department
+%of Defense (MURI N00014-00-1-0637). }
+
+% Manual newpage inserted to improve layout of sample file - not
+% needed in general before appendices/bibliography.
+
+%\newpage
+
+%\appendix
+%\section*{Appendix A.}
+%\label{app:theorem}
+%
+%% Note: in this sample, the section number is hard-coded in. Following
+%% proper LaTeX conventions, it should properly be coded as a reference:
+%
+%%In this appendix we prove the following theorem from
+%%Section~\ref{sec:textree-generalization}:
+%
+%In this appendix we prove the following theorem from
+%Section~6.2:
+%
+%\noindent
+%{\bf Theorem} {\it Let $u,v,w$ be discrete variables such that $v, w$ do
+%not co-occur with $u$ (i.e., $u\neq0\;\Rightarrow \;v=w=0$ in a given
+%dataset $\dataset$). Let $N_{v0},N_{w0}$ be the number of data points for
+%which $v=0, w=0$ respectively, and let $I_{uv},I_{uw}$ be the
+%respective empirical mutual information values based on the sample
+%$\dataset$. Then
+%\[
+%	N_{v0} \;>\; N_{w0}\;\;\Rightarrow\;\;I_{uv} \;\leq\;I_{uw}
+%\]
+%with equality only if $u$ is identically 0.} \hfill\BlackBox
+%
+%\noindent
+%{\bf Proof}. We use the notation:
+%\[
+%P_v(i) \;=\;\frac{N_v^i}{N},\;\;\;i \neq 0;\;\;\;
+%P_{v0}\;\equiv\;P_v(0)\; = \;1 - \sum_{i\neq 0}P_v(i).
+%\]
+%These values represent the (empirical) probabilities of $v$
+%taking value $i\neq 0$ and 0 respectively.  Entropies will be denoted
+%by $H$. We aim to show that $\fracpartial{I_{uv}}{P_{v0}} < 0$....\\
+%
+%{\noindent \em Remainder omitted in this sample. See http://www.jmlr.org/papers/ for full paper.}
+
+
+\vskip 0.2in
+\bibliography{sample}
+
+\end{document}

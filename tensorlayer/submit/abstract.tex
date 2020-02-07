@@ -1,0 +1,30 @@
+Recently we have observed emerging uses of deep learning techniques
+in multimedia systems.
+Developing a practical deep learning system is arduous and complex.
+It involves labor-intensive tasks for constructing sophisticated neural networks, 
+coordinating multiple network models, and managing a large amount of training-related data. 
+%The development efficiency is determined not only by the performance of training engines, but also by the richness of abstracted functions for managing neural networks, training data and parallel computation. 
+To facilitate such a development process, we propose
+\tl which is a Python-based versatile deep learning library.
+\tl provides high-level modules that abstract sophisticated operations towards 
+neuron layers, network models, 
+training data and dependent training jobs. In spite of offering simplicity, 
+it has transparent module interfaces that allows 
+developers to flexibly embed low-level controls within a backend engine,
+with the aim of supporting fine-grain tuning towards training.
+Real-world cluster experiment results show that \tl is able to achieve competitive performance and scalability
+in critical deep learning tasks.
+%Specifically, it contains (1) a layer module
+%that provides numerous reference neuron layers for building deep learning models,
+%(2) a neural network module that achieves fine-grain control of network life-cycle,
+%(3) a dataset module that helps developers create
+%training datasets (offline or online) in a flexible fashion,
+%and (4) a workflow module
+%that supports transparent scaling-out computations for complex training requests. 
+\tl was released in September 2016 on GitHub. Since after, it soon become one of the most popular
+open-sourced deep learning library used by researchers and practitioners. 
+
+
+%\begin{keywords}
+%	One, two, three, four, five
+%\end{keywords}

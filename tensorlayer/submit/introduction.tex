@@ -1,0 +1,104 @@
+\section{Introduction}
+
+% {\color{blue}
+% \textbf{Words and Problem Definition}\\
+% 1. Learning system > Network (include model architecture and parameters) > Layer \\
+% 2. Some layers have parameters (fully-connected layer, convolutional layer etc), some layers do not have parameters (pooling layer, dropout), but have other behaviour.\\
+% 3. Why parameter sharing is important?\\ 
+% - In complex deep learning applications, different networks or layers may have different behaviour in different time, 
+% or some layers have to be reused, like siamese network~\cite{} which the same CNN network will be used to encode two images.
+% %Another example is generative neural network (GAN)~\cite{}, the input of discriminator 
+% \\
+% 4. Concept of TL layer.\\
+% - All layers have 4 properties in common: %$http://tensorlayer.readthedocs.io/en/latest/modules/layers.html#understand-basic-layer$
+% \\
+% - Simple example: %$http://tensorlayer.readthedocs.io/en/latest/modules/layers.html#a-simple-layer$
+% \\
+% - This layer design make sure all layer have all parameters, dropout probabilities and layers' outputs of its previous layers, e.g. the latest layer is the whole network. This design helps to build complex learning system.
+% \\
+% - More details about concept of TL layer please check my $"\_previous\_draft.pdf"$.\\
+% 6. Concept of TensorDB\\
+% - Everything (including job, network model and its parameters) are data.\\
+% - More details about concept of TensorDB please check $\_tensordb\_paper.pdf$.
+% }
+
+%Deep learning has been widely used in today's multimedia systems.
+Recently we have observed the prosperity of applying deep learning into multimedia systems.
+Important applications include achieving visual recognition using convolution neural networks (CNN) (e.g., object recognition \cite{krizhevsky2012imagenet} and image generation \cite{radford2015dcgan}), natural language understanding using recurrent neural networks (RNN) \cite{mikolov2010recurrent}
+and machine strategic thinking using deep reinforcement learning (DRL) \cite{mnih2015human}.
+Such a prosperity has led to a booming of deep learning 
+frameworks including TensorFlow \cite{abadi2016tensorflow}, MXNet \cite{chen2015mxnet}, Torch \cite{collobert2002torch} and CNTK \cite{seide2016cntk}.
+Developing a deep learning system typically starts with a rigorous search for an optimal neural network. 
+A typical neural network consists of stacked neuron layers such as dropout \cite{srivastava2014dropout}, batch normalization \cite{ioffe2015batch}, CNN and RNN. Developers rapidly evaluate varied networks 
+by utilizing rich reference layer implementations imported from open source libraries including
+Caffe \cite{jia2014caffe}, Keras \cite{chollet2015}, Theano \cite{bergstra2010theano}, Sonnet \cite{sonnet} and TFLearn \cite{tflearn2016}.
+
+Deep learning systems are increasingly interactive~\cite{amershi2014power}. 
+This has led to three transitions in their development landscape.
+Firstly, datasets are becoming dynamic. The emergence of 
+learning systems that involve feedback loops, e.g., DRL and active learning \cite{gal2017deep},
+has spawn numerous requests for manipulating, consolidating and querying datasets.
+Secondly, models are becoming composite. To achieve precise recognition, a deep neural network, e.g., dynamic neural networks \cite{andreas2016learning} and generative adversarial networks (GANs)~\cite{radford2015dcgan},
+can need to activate varied neuron layers according to input features.
+Thirdly, training is becoming continuous. Samples, features, 
+human insights, and operation experiences 
+can be produced even after deployment. 
+It thus becomes necessary to constantly optimize the hyper-parameters
+of a neural network by supporting human-in-the-loop.
+
+% I am not understanding that phrase:
+The growing interactivity complicates deep learning development.  
+Developers have to spend many 
+cycles on integrating components for experimenting neural networks, managing intermediate training states, 
+organizing training-related data, and enabling hyper-parameter tuning in responses to varied events. 
+To reduce required cycles, we argue for an integrative development approach where 
+the complex operations towards neural networks, states, data, and hyper-parameters are abstracted
+and provided within complementary modules. 
+This spawns an unified environment where developers are able to efficiently explore
+ideas through high-level module operations, and apply customizations to modules
+only if necessary. This approach does not intend to create module lock-in. Instead,
+modules are modelled minimal single-function blocks that share an interaction interface, which
+allows easy plug-ins of user-defined modules.
+
+\tl is a community effort to achieve this vision. It is a modular
+Python library that provides easy-to-use modules to facilitate researchers
+and engineers in developing complex deep learning systems. Currently, it has 
+(1) a \emph{layer} module that provides reference implementation of neuron layers 
+which can be flexibly interconnected to architect neural networks,
+(2) a \emph{model} module that can help manage the intermediate states incurred throughout a model life-cycle,
+(3) a \emph{dataset} module that manages training data which can be used by both offline and online learning systems, 
+and (4) a \emph{workflow} module that supports asynchronous scheduling and failure recovery for concurrent training jobs.
+In addition to using high-level module APIs, \tl users are allowed to offload low-level functions
+into execution backends to achieve fine-grain controls towards a training process. This transparent interface design is 
+particular useful when addressing domain-specific problems. 
+
+\tl implementation is optimized for performance and scalability. It adopts TensorFlow as the distributed training and inference engine. 
+Delegation into TensorFlow exhibits negligible overhead. In addition, \tl uses MongoDB as the storage backend.
+This backend is augmented with an efficient stream controller
+for managing unbounded training data.  
+To enable automation, this controller is able to 
+batch results from a dataset query 
+and spawns batch training tasks accordingly. 
+For efficiently handling large data objects like videos, \tl uses GridFS as a blob backend, and makes
+MongoDB act as an sample indexer. Finally, \tl implements
+an agent pub-sub system to achieve asynchronous training workflow. Agents
+can be placed onto various kinds of machines and
+subscribe to independent tasks queues.
+These queues are managed by in reliable storages so that failed tasks can be replayed automatically.
+
+In contrast to other TensorFlow-based libraries such as Keras and TFLearn, 
+TensorLayer permits straightforward low-level controls within the execution of layers and neural networks. 
+In addition, it provides extra dataset and workflow modules to free users from labor-intensive 
+data pre-processing, post-processing, module serving and data management tasks. Last but not least,
+\tl does not create library lock-in. Its unified module interaction interface can accept
+layers and networks imported from Keras and TFLearn in a non-invasive manner.
+
+\tl was released on Github~\footnote{\url{https://github.com/zsdonghao/tensorlayer}} in September 2016, and soon become one of the most popular 
+open-sourced deep learning libraries \cite{dlranking2017}. By July 2017, it has received more than 1900 stars and has formed an 
+active development community. We demonstrate its 
+effectiveness through real-world applications, where \tl are used to implement
+DRL, GANs, model cross-validation and hyper parameter optimization~\cite{bergstra2012random}. These applications were previously challenging 
+to develop and requires expensive development effort for integrating storage, fault-tolerance,
+computations and cluster management components. The use of \tl significantly accelerates such a process. 
+
+%As using layer in layer out design, all other TensorFlow wrappers and ops can be merged into TensorLayer by using LambdaLayer.
