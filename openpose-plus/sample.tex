@@ -37,8 +37,7 @@
 
 \begin{document}
 
-\title{OpenPose-Plus: A Flexible and High-performance \\
-Human Pose Estimation Framework}
+\title{OpenPose-Plus: Flexible Real-time Human Pose Estimation}
 
 \author{\name Marina Meil\u{a} \email mmp@stat.washington.edu \\
        \addr Department of Statistics\\
@@ -72,74 +71,91 @@ Human Pose Estimation Framework}
 \end{abstract}
 
 \begin{keywords}
-  Human Pose Estimation, Flexible High-level APIs, High-performance System
+  Pose Estimation, Computer Vision, Real-time Systems
 \end{keywords}
 
 \section{Introduction}
 
 Human pose estimation is a core task in computer vision.
 Its goal is to localise human anatomical key-points (e.g., elbow, wrist, etc.)
-and use the detected key-points to infer human pose. 
-Estimating human pose has many important applications, such as interactive gaming~\citep{x}, automated supermarket~\citep{x},
+and use the detected key-points to infer the meaning of human pose. 
+Estimating human pose has many useful applications, such as interactive gaming~\citep{x}, automated supermarket~\citep{x},
 surveillance camera~\citep{x} and self-driving cars~\citep{x}.
-This has motivated practitioners and scientists to invent 
-many useful pose estimation algorithms~\citep{x1, x2, x3, x4, x5}
-recently.
+These applications are often developed and tested
+in high-performance servers, and deployed at energy-constrained 
+edge and embedded devices. 
 
-It is important to design, test and deploy the
-pose estimation algorithms in real-world environments. 
-Developers find this difficult for two major challenges: (1)
-They often need to \emph{flexibly} customise the algorithms
-based on pose estimation
-applications. These applications contain many dependent components 
-used in the
-training and inference phases. During training,
-different applications need different training
-datasets, data augmentation, model architectures
-and logic for interpreting detected key-points.
-During inference, these applications
-also need to achieve different ways of handling real-time data inputs and
-embedded platforms (e.g., TensorRT or CPU); (2) Pose estimation
-applications produces challenging data input rates (i.e., processing tens of high-resolution images per second on an embedded platform~\citep{x}). Developers
-must ensure no bottleneck can occur in all the components in a pipeline
-, and thus can achieve the preferred real-time processing. 
+Many practitioners have shown the strong interests in applying 
+pose estimation techniques in the real world.
+They, however, report two major challenges: (1) \emph{Flexibility}.
+It is challenging to customize state-of-the-art pose estimation
+algorithms for applications. 
+According
+to applications and environments,
+these algorithms should be adapted to use different
+data pre-processing/post-processing modules~\citep{x1, x2}
+and deep neural networks~\citep{x1, x2, x3}.
+For example, a mobile developer 
+wants to trade-off accuracy for
+performance by replacing an high-accuracy
+model (i.e., Inception~\citep{x}) with an memory-efficient model (i.e., MobileNet~\citep{x}), and further train the new model
+with custom datasets;
+(2) \emph{Real-time performance}. It is also challenging to achieve real-time data processing
+required by most pose estimation applications.
+These applications produce high-resolution images
+at high rates (e.g., [....]). Processing such data at line rates 
+is non-trivial for the
+hardware (e.g., Jetson TX2) available on commodity edge devices~\citep{evidence}.
 
-Existing pose estimation systems are unable to fully address
-these challenges.
-On one end, there are domain-specific systems such as OpenPose~\citep{x} which achieves high-performance using 
-a monolithic low-level implementation.
-There are no APIs for configuring the systems, and
-as a result, the developers have to largely modify or rewrite the
-the systems based on the specific requirements from applications. 
-On the other end,
-there are general-purpose high-level
-CPU/GPU engines such as TensorFlow and PyTorch that can be used
-for pose estimation 
-These engines allow the users to easily customise different components;
-but with major performance overheads. 
+Though several pose estimation systems have recently become available,
+none of them can provide the required flexibility 
+and real-time performance at the same time. 
+Oftentimes users have to choose either flexibility
+or performance, and must compromise the other.
+On one extreame, systems like OpenPose~\citep{x}
+are designed for specific pose estimation tasks and hardware architectures.
+They have monolithic optimised system components,
+and do not have principle APIs to alter the choices of 
+data modules and neural networks, making
+them rigid and brittle to be adapted.
+On the other extreme, users can quickly prototype
+pose estimation applications~\citep{x1, x2}
+using general-purpose 
+CPU/GPU engines such as TensorFlow and PyTorch. 
+The performance of these systems is ultimately
+limited by their comprehensive usages of high-level dynamic
+languages (i.e., Python) and the lack of designs for
+efficient execution on embedded platforms.
 
-To close this gap, we design a human pose estimation framework OpenPose-Plus that
-aims to provide both flexibility and high-performance. OpenPose-Plus has two novel designs:
+To close this gap, we argue that: to achieve both
+flexibility and real-time performance in 
+human pose estimation, it is important
+to co-design algorithm and their execution runtime.
+To demonstrate this, we design and develop: OpenPose-Plus,
+a flexible real-time pose estimation framework.
+The design of OpenPose-Plus makes two key contributions: it proposes
 (i) high-level Python APIs which allows users
-to customise abstracted components that
-are pervasively used in training and deploying
-pose estimation algorithms; (ii) a high-performance runtime that
-can automatically run these components 
-on embedded hardware: TensorRT, minimise
-data movement to achieve low-latency,
-and collectively schedule the component
-to ensure all input can be processed in real-time.
+to deeply customise the data modules
+and neural networks used in training an pose estimation
+algorithm, and (ii) a real-time runtime which
+can automatically offload the trained algorithm
+onto embedded hardware: TensorRT, and 
+fully exploit the potential of such hardware by 
+minimising data movement cost and achieving the highest possible
+level of parallel usage of available computation devices (i.e., CPUs and GPUs). 
 
-We demonstrate the generality of our design by using OpenPose-Plus 
-to implement various
-state-of-the-art pose estimation applications~\citep{x1, x2, x3}.
-Evaluation result shows that
-OpenPose-Plus is able to process 30 [resolution?] images per second
-produced by a high-resolution camera on a commodity 1070 GPU,
-which goes beyond the 24 images/s real-time processing requirement.
-OpenPose-Plus was open-sourced in October 2018 with a 
+We evaluate the effectiveness of OpenPose-Plus 
+using extensive application studies and
+test-bed performance evaluation. 
+Evaluation result show that the high-level APIs of OpenPose-Plus
+are sufficient to implement challenging pose estimation
+applications which are difficult to release today.
+OpenPose-Plus is also able to process the data in real-time
+on state-of-the-art embedded platforms. Specifically, it can
+process [...] images per second on [...].
+OpenPose-Plus was open-sourced in October 2018 under a 
 Apache 2 licence. Since after, it has attracted numerous 
-industry and academic users, and created a large use base on Github (700 stars by the date of submission). 
+industry and academic users, and has a quickly growing use base on Github (700 stars by the date of submission). 
 
 \section{Architecture and Runtime Design}
 
